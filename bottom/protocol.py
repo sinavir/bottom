@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import Optional
 
 
@@ -39,10 +40,12 @@ class Protocol(asyncio.Protocol):
         *lines, self.buffer = self.buffer.split(DELIM_COMPAT)
         for line in lines:
             message = line.decode(self.client.encoding, "ignore").strip()
+            logging.debug(f"Raw message <<< {message}")
             self.client.handle_raw(message)
 
     def write(self, message: str) -> None:
         message = message.strip()
+        logging.debug(f"Raw message >>> {message}")
         data = message.encode(self.client.encoding) + DELIM
         self.transport.write(data)
 
